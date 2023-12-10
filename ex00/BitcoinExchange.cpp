@@ -14,7 +14,7 @@
 
 BitcoinExchange::BitcoinExchange(const std::string& databaseFile)
 {
-    file.open(databaseFile);
+    file.open(databaseFile.c_str());
     if (!file.is_open())
         throw std::runtime_error("Error: could not open database file.");
 
@@ -32,7 +32,7 @@ BitcoinExchange::BitcoinExchange(const std::string& databaseFile)
         {
             std::string date = line.substr(0, commaPosition);
             std::string numberString = line.substr(commaPosition + 1);
-            double rate = std::stod(numberString);
+            double rate = atof(numberString.c_str());
             exchangeRates[date] = rate;
         }
         else 

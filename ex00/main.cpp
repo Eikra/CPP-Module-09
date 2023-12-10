@@ -115,8 +115,8 @@ void    checkDateFormat(std::string date)
         throw std::runtime_error("Error: invalid date format.");
     str[2] = date.substr(8, 2);
     
-    month = std::stod(str[1]);
-    day = std::stod(str[2]);
+    month = atof(str[1].c_str());
+    day = atof(str[2].c_str());
     if (!month || !day || month > 12 || day > 31)
         throw std::runtime_error("Error: invalid date format.");
 
@@ -142,7 +142,7 @@ std::map<std::string, double> parseLine(const std::string& line)
     checkDateFormat(date);
 
     std::string numberString = line.substr(pipePosition + 1);
-    double rate = std::stod(numberString);
+    double rate = atof(numberString.c_str());
     if (rate < 0)
         throw std::runtime_error("Error: not a positive number.");
     if (rate > 1000.0)
