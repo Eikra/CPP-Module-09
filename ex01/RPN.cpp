@@ -55,15 +55,19 @@ int     RPN::calculate(const std::string& expression)
 
     if (operands.size() == 1)
         return operands.top();
-    
+    std::cout << operands.top() << " ";
     int result = operands.top();
     operands.pop();
     while (operators.size())
     {
-        result = performOperation(result, operands.top(), operators.top());
+        std::cout << operators.top() << " ";
+        std::cout << operands.top() << " ";
+        
+        result = performOperation(operators.top(), result, operands.top());
         operands.pop();
         operators.pop();
     }
+    std::cout <<  "\n ";
     return result;
 }
 
