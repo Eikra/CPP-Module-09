@@ -6,13 +6,13 @@
 #    By: iecharak <iecharak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/08 20:38:00 by iecharak          #+#    #+#              #
-#    Updated: 2023/12/08 20:38:23 by iecharak         ###   ########.fr        #
+#    Updated: 2023/12/10 10:36:31 by iecharak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = btc
 
-SRC = main.cpp
+SRC = main.cpp BitcoinExchange.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
@@ -24,7 +24,7 @@ RM = rm -rf
 
 all : $(NAME)
 
-$(NAME) : $(OBJ) 
+$(NAME) : $(OBJ) BitcoinExchange.hpp
 	$(CC) $(CPPFLAGS) $(OBJ) -o $(NAME)
 
 clean :

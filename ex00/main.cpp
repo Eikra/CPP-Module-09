@@ -6,76 +6,11 @@
 /*   By: iecharak <iecharak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:38:43 by iecharak          #+#    #+#             */
-/*   Updated: 2023/12/09 22:27:57 by iecharak         ###   ########.fr       */
+/*   Updated: 2023/12/10 10:42:14 by iecharak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <map>
-#include <fstream>
-#include <stdexcept>
-#include <sstream>
-#include <string>
-#include <cctype>
-
-class   BitcoinExchange
-{
-    private:
-        std::map<std::string, double>   exchangeRates;
-        std::ifstream                   file;
-    public:
-        BitcoinExchange(const std::string& databaseFile);
-        ~BitcoinExchange();
-        double  getExchangeRate(const std::string& date);
-};
-
-
-BitcoinExchange::BitcoinExchange(const std::string& databaseFile)
-{
-    file.open(databaseFile);
-    if (!file.is_open())
-        throw std::runtime_error("Error: could not open database file.");
-
-    std::string header;
-    std::getline(file, header);
-
-    if (header != "date,exchange_rate")
-        throw std::runtime_error ("Invalid database header");
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        size_t commaPosition = line.find(',');
-        if (commaPosition != std::string::npos)
-        {
-            std::string date = line.substr(0, commaPosition);
-            std::string numberString = line.substr(commaPosition + 1);
-            double rate = std::stod(numberString);
-            exchangeRates[date] = rate;
-        }
-        else 
-            throw std::runtime_error ("Invalid input string format in database.");
-    }
-    file.close();
-
-}
-
-double  BitcoinExchange::getExchangeRate(const std::string& date)
-{
-    std::map<std::string, double>::const_iterator   it = exchangeRates.lower_bound(date);
-
-    if (it == exchangeRates.begin() && date < it->first)
-        throw std::out_of_range("Error: date not found in database.");
-
-    if (it == exchangeRates.end())
-        throw std::out_of_range("Error: date not found in database.");
-    
-    while (it != exchangeRates.begin() && it->first > date)
-        --it;
-    return it->second;
-}
-
-BitcoinExchange::~BitcoinExchange(){}
+#include "BitcoinExchange.hpp"
 
 size_t  characterCount(const std::string& line, char c)
 {
@@ -137,7 +72,7 @@ std::string strtrim(const std::string& input) {
     return input.substr(start, end - start);
 }
 
-void    checkDate(std::string date)
+void    checkDateFormat(std::string date)
 {
     std::string str[3];
     double  month, day;
@@ -191,13 +126,9 @@ void    checkDate(std::string date)
         throw std::runtime_error("Error: invalid date format.");
 }
 
-//****************************************************************************************************************************
-
 std::map<std::string, double> parseLine(const std::string& line)
 {
     std::map<std::string, double> exchangeRates;
-    
-    //
     
     if (!is_validcharacter(line) || characterCount(line, '|') != 1 || minusCount(line) != 2  || characterCount(line, '.') > 1 )
         throw std::runtime_error("Error: bad input => " + line);
@@ -208,7 +139,7 @@ std::map<std::string, double> parseLine(const std::string& line)
     date = strtrim(date);
     if (date.length() != 10)
         throw std::runtime_error("Error: invalid date format.");
-    checkDate(date);
+    checkDateFormat(date);
 
     std::string numberString = line.substr(pipePosition + 1);
     double rate = std::stod(numberString);
@@ -223,10 +154,6 @@ std::map<std::string, double> parseLine(const std::string& line)
     
 }
 
-//****************************************************************************************************************************
-
-
-
 int main(int ac, char **av)
 {
     if (ac == 2)
@@ -238,7 +165,6 @@ int main(int ac, char **av)
             std::ifstream   inputFile(av[1]);
             if (!inputFile.is_open())
                 throw std::runtime_error("Error: could not open input file.");
-//****************************************************************************************************************************
             
             std::string header;
             std::getline(inputFile, header);
@@ -250,14 +176,10 @@ int main(int ac, char **av)
             {
                 try
                 {
-                    
                     std::map<std::string, double> data = parseLine(line);
                     std::map<std::string, double>::iterator it = data.begin();
-                    //std::cout << it->first <<'\n';
                     double  exchaneRate = exchange.getExchangeRate(it->first);
-                    //std::cout << "here\n";
                     double  result = it->second * exchaneRate;
-
                     std::cout << it->first << " => " << it->second << " = " << result << std::endl;
                 }
                 catch(const std::exception& e)
@@ -266,9 +188,6 @@ int main(int ac, char **av)
                 }
             }
             inputFile.close();
-
-//*****************************************************************************************************************************
-            
         }
         catch(const std::exception& e)
         {
