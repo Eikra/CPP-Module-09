@@ -1,4 +1,5 @@
 #include "RPN.hpp"
+#include <sstream>
 
 RPN::RPN(){}
 
@@ -25,54 +26,76 @@ bool RPN::isWhitespace(char c)
 
 int     RPN::calculate(const std::string& expression)
 {
-    std::stack<int>    operands;
+    std::stack<int>     operands;
     std::stack<char>    operators;
+    std::stack<char>    expr;
 
-    size_t  i = expression.length();
-    size_t  j = 0;
-    i--;
+    size_t  i = 0;
+    size_t   j = expression.length() - 1;
 
-    while (j < expression.length())
+    while (i < expression.length())
     {
-        if (isWhitespace(expression[i]))
+        if (isWhitespace(expression[j]))
         {
-            i--;
-            j++;
+            i++;
+            j--;
             continue;
         }
-        else if (isDigit(expression[i]))
-            operands.push(static_cast<int>(expression[i]) - 48);
-        else if (isOperator(expression[i]))
-            operators.push(expression[i]);
-        else 
+        else if (!isDigit(expression[j]) && !isOperator(expression[j]))
             throw std::runtime_error("Error");
-        i--;
-        j++;
+        else
+        {
+            expr.push(expression[j]);
+            j--;
+            i++;
+        }
     }
-
-    if (operands.size() != (operators.size() + 1) || (!operands.size() && !operators.size()))
+    
+    if (expr.size() <= 2)
         throw std::runtime_error("Error");
-
-    if (operands.size() == 1)
-        return operands.top();
-    std::cout << operands.top() << " ";
-    int result = operands.top();
-    operands.pop();
-    while (operators.size())
+    
+    while (1)
     {
-        std::cout << operators.top() << " ";
-        std::cout << operands.top() << " ";
-        
-        result = performOperation(operators.top(), result, operands.top());
-        operands.pop();
-        operators.pop();
+        if (!expr.size())
+        {
+            if (operands.size() < 2 && operators.size())
+                throw std::runtime_error("Error");
+            else 
+            return operands.top();
+
+        }
+        else if (isDigit(expr.top()))
+        {
+            operands.push(expr.top() - 48);
+            expr.pop();
+        }
+        else if (isOperator(expr.top()) && operands.size() < 2)
+        {
+            operators.push(expr.top());
+            expr.pop();
+        }
+        else if (isOperator(expr.top()) && operands.size() > 1)
+        {
+            int result = operands.top();
+            operands.pop();
+
+
+            result = performOperation(expr.top(), operands.top(), result);
+
+
+            operands.pop();
+            expr.pop();
+
+
+            operands.push(result);
+        }
     }
-    std::cout <<  "\n ";
-    return result;
+    return operands.top();
 }
 
 int RPN::performOperation(char op, int operand1, int operand2) 
 {
+    //std:: cout << operand1 << " " << op << " " << operand2 << '\n';
     switch (op) {
         case '+':
             return operand1 + operand2;
@@ -83,7 +106,7 @@ int RPN::performOperation(char op, int operand1, int operand2)
         case '/':
             return safeDivide(operand1, operand2);
         default:
-            return 0; 
+            return 0;
     }
 }
 
