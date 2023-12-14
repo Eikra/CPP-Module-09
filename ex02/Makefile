@@ -1,6 +1,6 @@
-NAME = RPN
+NAME = PmergeMe
 
-SRC = main.cpp RPN.cpp
+SRC = main.cpp #PmergeMe.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
@@ -12,7 +12,7 @@ RM = rm -rf
 
 all : $(NAME)
 
-$(NAME) : $(OBJ) RPN.hpp
+$(NAME) : $(OBJ) #PmergeMe.hpp
 	$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME)
 
 clean :
