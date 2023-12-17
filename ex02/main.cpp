@@ -6,7 +6,7 @@
 /*   By: iecharak <iecharak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/17 10:12:43 by iecharak          #+#    #+#             */
-/*   Updated: 2023/12/17 11:40:01 by iecharak         ###   ########.fr       */
+/*   Updated: 2023/12/17 15:31:13 by iecharak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,15 +82,15 @@ int main(int ac, char **av)
         
         PmergeMe    sorter;
 
-        std::clock_t start = std::clock();
-        sorter.sort(vec, 0 , vec.size() - 1);
-        std::clock_t end = std::clock();
-        double elapsed = 1000000.0 * (end - start) / CLOCKS_PER_SEC;
-  
         std::clock_t start2 = std::clock();
         sorter.sort(deq, 0 , deq.size() - 1);
         std::clock_t end2 = std::clock();
         double elapsed2 = 1000000.0 * (end2 - start2) / CLOCKS_PER_SEC;
+
+        std::clock_t start = std::clock();
+        sorter.sort(vec, 0 , vec.size() - 1);
+        std::clock_t end = std::clock();
+        double elapsed = 1000000.0 * (end - start) / CLOCKS_PER_SEC;
 
         std::cout << "\n\nAfter:  ";
         printContainer(vec);
@@ -103,7 +103,6 @@ int main(int ac, char **av)
     {
         std::cout << "Error: " << e.what() << std::endl;
     }
-
     return 0;
 }
 

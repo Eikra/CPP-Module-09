@@ -6,7 +6,7 @@
 /*   By: iecharak <iecharak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 20:38:43 by iecharak          #+#    #+#             */
-/*   Updated: 2023/12/10 10:42:14 by iecharak         ###   ########.fr       */
+/*   Updated: 2023/12/17 15:24:09 by iecharak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ void    checkDateFormat(std::string date)
 
     if (characterCount(date, '-') != 2)
         throw std::runtime_error("Error: invalid date format.");
-
     
     while (++i < date.length() && date[i])
     {
@@ -122,8 +121,22 @@ void    checkDateFormat(std::string date)
 
     if (!(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) && day > 30)
         throw std::runtime_error("Error: invalid date format.");
-    if(month == 2 && day > 28)
+    if(month == 2 && day > 29)
         throw std::runtime_error("Error: invalid date format.");
+}
+
+void    checkInvalidNumber(const char *s)
+{
+    int i = 0;
+
+    while(s && isWhitespace(s[i]))
+        i++;
+    while(s && isNumericCharacter(s[i]))
+        i++;
+    while(s && isWhitespace(s[i]))
+        i++;
+    if (s && isNumericCharacter(s[i]))
+        throw std::runtime_error("Error: invalid number.");
 }
 
 std::map<std::string, double> parseLine(const std::string& line)
@@ -142,6 +155,7 @@ std::map<std::string, double> parseLine(const std::string& line)
     checkDateFormat(date);
 
     std::string numberString = line.substr(pipePosition + 1);
+    checkInvalidNumber(numberString.c_str());
     double rate = atof(numberString.c_str());
     if (rate < 0)
         throw std::runtime_error("Error: not a positive number.");
@@ -151,7 +165,6 @@ std::map<std::string, double> parseLine(const std::string& line)
     exchangeRates[date] = rate;
     
     return (exchangeRates);
-    
 }
 
 int main(int ac, char **av)
@@ -169,7 +182,7 @@ int main(int ac, char **av)
             std::string header;
             std::getline(inputFile, header);
             if (header != "date | value")
-                throw std::runtime_error ("Invalid database header");
+                std::cerr << "Error: Invalid database header\n";
             
             std::string line;
             while (std::getline(inputFile, line))

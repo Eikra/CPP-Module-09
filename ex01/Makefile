@@ -6,7 +6,7 @@
 #    By: iecharak <iecharak@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/17 11:24:12 by iecharak          #+#    #+#              #
-#    Updated: 2023/12/17 11:24:13 by iecharak         ###   ########.fr        #
+#    Updated: 2023/12/17 14:55:09 by iecharak         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ OBJ = $(SRC:.cpp=.o)
 
 CXX = c++
 
-CXXFLAGS = -Wall -Werror -Wextra -std=c++98 
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -g3 -fsanitize=address
 
 RM = rm -rf
 

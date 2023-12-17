@@ -6,7 +6,7 @@
 /*   By: iecharak <iecharak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/17 11:24:06 by iecharak          #+#    #+#             */
-/*   Updated: 2023/12/17 11:24:07 by iecharak         ###   ########.fr       */
+/*   Updated: 2023/12/17 14:58:46 by iecharak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ bool RPN::isWhitespace(char c)
 int     RPN::calculate(const std::string& expression)
 {
     std::stack<int>     operands;
-    std::stack<char>    operators;
+    //std::stack<char>    operators;
     std::stack<char>    expr;
 
     size_t  i = 0;
@@ -68,36 +68,27 @@ int     RPN::calculate(const std::string& expression)
     
     while (1)
     {
+        if (!expr.size() && operands.size() > 1)
+            throw std::runtime_error("Error");
         if (!expr.size())
-        {
-            if (operands.size() < 2 && operators.size())
-                throw std::runtime_error("Error");
-            else 
-            return operands.top();
-
-        }
+            break;
         else if (isDigit(expr.top()))
         {
             operands.push(expr.top() - 48);
             expr.pop();
+            continue;
         }
-        else if (isOperator(expr.top()) && operands.size() < 2)
+        if (isOperator(expr.top()))
         {
-            operators.push(expr.top());
-            expr.pop();
-        }
-        else if (isOperator(expr.top()) && operands.size() > 1)
-        {
+            if (operands.size() < 2)
+                throw std::runtime_error("Error");
             int result = operands.top();
             operands.pop();
-
-
+            
             result = performOperation(expr.top(), operands.top(), result);
-
-
+            
             operands.pop();
             expr.pop();
-
 
             operands.push(result);
         }
