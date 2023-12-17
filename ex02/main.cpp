@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: iecharak <iecharak@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/17 10:12:43 by iecharak          #+#    #+#             */
+/*   Updated: 2023/12/17 11:40:01 by iecharak         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "PmergeMe.hpp"
 #include <sstream>
 
@@ -52,61 +64,6 @@ void    printContainer(std::vector<unsigned int> &vec)
     }
 }
 
-void insertionSort(std::vector<unsigned int>& A, int start, int end) {
-    for (int i = start; i < end; i++) {
-        unsigned int tempVal = A[i + 1];
-        int j = i + 1;
-        while (j > start && A[j - 1] > tempVal) {
-            A[j] = A[j - 1];
-            j--;
-        }
-        A[j] = tempVal;
-    }
-}
-
-void merge(std::vector<unsigned int>& A, int start, int mid, int end) {
-    int n1 = mid - start + 1;
-    int n2 = end - mid;
-    std::vector<unsigned int> LA(A.begin() + start, A.begin() + mid + 1);
-    std::vector<unsigned int> RA(A.begin() + mid + 1, A.begin() + end + 1);
-    int RIDX = 0;
-    int LIDX = 0;
-    for (int i = start; i <= end; i++) 
-    {
-        if (RIDX == n2) 
-        {
-            A[i] = LA[LIDX];
-            LIDX++;
-        } 
-        else if (LIDX == n1) 
-        {
-            A[i] = RA[RIDX];
-            RIDX++;
-        } 
-        else if (RA[RIDX] > LA[LIDX]) 
-        {
-            A[i] = LA[LIDX];
-            LIDX++;
-        } 
-        else 
-        {
-            A[i] = RA[RIDX];
-            RIDX++;
-        }
-    }
-}
-
-void sort(std::vector<unsigned int>& A, int start, int end) {
-    if (end - start > 5) {
-        int mid = (start + end) / 2;
-        sort(A, start, mid);
-        sort(A, mid + 1, end);
-        merge(A, start, mid, end);
-    } else {
-        insertionSort(A, start, end);
-    }
-}
-
 int main(int ac, char **av) 
 {
     if (ac < 2)
@@ -119,34 +76,28 @@ int main(int ac, char **av)
         std::vector<unsigned int>   vec;
         std::deque<unsigned int>    deq;
         parse(vec, deq, av);
-        std::cout << "Before:";
+        
+        std::cout << "Before: ";
         printContainer(vec);
         
         PmergeMe    sorter;
 
         std::clock_t start = std::clock();
-        ::sort(vec, 0 , vec.size() - 1);
+        sorter.sort(vec, 0 , vec.size() - 1);
         std::clock_t end = std::clock();
         double elapsed = 1000000.0 * (end - start) / CLOCKS_PER_SEC;
   
         std::clock_t start2 = std::clock();
+        sorter.sort(deq, 0 , deq.size() - 1);
         std::clock_t end2 = std::clock();
         double elapsed2 = 1000000.0 * (end2 - start2) / CLOCKS_PER_SEC;
 
-        std::cout << "\n\nAfter: ";
+        std::cout << "\n\nAfter:  ";
         printContainer(vec);
 
-        std::cout << "\n\nTime to process a range of "
-                    << vec.size()
-                    << " elements with std::vector : "
-                    << elapsed
-                    << " us\n";
-            std::cout << "\nTime to process a range of "
-                    << vec.size()
-                    << " elements with std::deque : "
-                    << elapsed2
-                    << " us\n";
-        std::cout << "\nAfter: ";
+        std::cout << "\n\nTime to process a range of " << vec.size() << " elements with std::vector : " << elapsed << " us\n";
+        
+        std::cout << "\nTime to process a range of " << vec.size() << " elements with std::deque : " << elapsed2 << " us\n";
     }
     catch (std::exception &e)
     {
@@ -155,3 +106,4 @@ int main(int ac, char **av)
 
     return 0;
 }
+
